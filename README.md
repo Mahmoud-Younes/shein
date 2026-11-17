@@ -6,6 +6,25 @@ e-commerce services end to end: browsing/searching a catalog, product
 details, a Firestore-backed cart, a wishlist, email/password auth, and
 checkout that writes real orders to Firestore.
 
+**Stack:** Flutter (Web) · `flutter_bloc` (MVVM, Cubit per feature) ·
+Firebase Auth · Cloud Firestore · go_router
+
+| ![Home](docs/screenshots/home.png) |
+| :---: |
+| **Home** — hero banner, category strip, and New In / Best Sellers / Sale sections, all driven by Firestore |
+
+| ![Catalog](docs/screenshots/catalog.png) ![Search](docs/screenshots/search.png) ![Product](docs/screenshots/product.png) |
+| :---: |
+| **Catalog** (groups + category filters) · **Search** (`?q=shirt`) · **Product details** (colors, sizes, quantity) |
+
+| ![Cart](docs/screenshots/cart.png) ![Checkout](docs/screenshots/checkout.png) ![Orders](docs/screenshots/orders.png) |
+| :---: |
+| **Cart** (Firestore-backed, realtime badge) · **Checkout** (address + summary) · **My Orders** (confirmation banner, order history) |
+
+| ![Wishlist](docs/screenshots/wishlist.png) ![Login](docs/screenshots/login.png) |
+| :---: |
+| **Wishlist** · **Sign in** (email/password, mapped friendly errors) |
+
 > Demo/training project: Firestore rules are intentionally open so the app
 > can seed its demo catalog anonymously on first run. Do not deploy as-is
 > (see `firestore.rules`).
@@ -91,11 +110,11 @@ flutter build web   # → build/web
 
 ### 3. End-to-end verification
 
-The full user flows (guest browsing → sign-up → cart → checkout → orders)
-were verified end to end in headless Chromium against the real Firebase
-backend, driving the built app through its accessibility tree. The E2E
-toolchain and suites live outside this repository and are not distributed
-with it.
+The full user flows (guest browsing → sign-up → cart → wishlist → checkout
+→ orders) were verified end to end in headless Chromium against the real
+Firebase backend, driving the built app through its accessibility tree.
+The E2E toolchain and suites live outside this repository and are not
+distributed with it.
 
 ### 4. Manual run
 
