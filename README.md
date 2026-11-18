@@ -9,19 +9,19 @@ working end to end.
 **Stack:** Flutter (Web) · `flutter_bloc` (MVVM, Cubit per feature) ·
 Firebase Auth · Cloud Firestore · go_router
 
-| ![Home](docs/screenshots/home.png) |
+| ![Home](assets/screenshots/home.png) |
 | :---: |
 | **Home** — hero banner, category strip, and New In / Best Sellers / Sale sections, all driven by Firestore |
 
-| ![Catalog](docs/screenshots/catalog.png) ![Search](docs/screenshots/search.png) ![Product](docs/screenshots/product.png) |
+| ![Catalog](assets/screenshots/catalog.png) ![Search](assets/screenshots/search.png) ![Product](assets/screenshots/product.png) |
 | :---: |
 | **Catalog** (groups + category filters) · **Search** (`?q=shirt`) · **Product details** (colors, sizes, quantity) |
 
-| ![Cart](docs/screenshots/cart.png) ![Checkout](docs/screenshots/checkout.png) ![Orders](docs/screenshots/orders.png) |
+| ![Cart](assets/screenshots/cart.png) ![Checkout](assets/screenshots/checkout.png) ![Orders](assets/screenshots/orders.png) |
 | :---: |
 | **Cart** (Firestore-backed, realtime badge) · **Checkout** (address + summary) · **My Orders** (confirmation banner, order history) |
 
-| ![Wishlist](docs/screenshots/wishlist.png) ![Login](docs/screenshots/login.png) |
+| ![Wishlist](assets/screenshots/wishlist.png) ![Login](assets/screenshots/login.png) |
 | :---: |
 | **Wishlist** · **Sign in** (email/password, mapped friendly errors) |
 
