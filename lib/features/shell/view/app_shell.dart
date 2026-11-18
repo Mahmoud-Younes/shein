@@ -293,7 +293,7 @@ class AppShell extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
           child: Text(
-            '© 2026 SHEIN clone — Flutter Web + Firebase · built as a DEPI training task',
+            '© 2026 SHEIN clone — Flutter Web + Firebase',
             style: TextStyle(fontSize: 12, color: AppColors.textGrey),
           ),
         ),

@@ -1,10 +1,10 @@
-# SHEIN — Flutter Web Clone (DEPI Training Task)
+# SHEIN Clone — Flutter Web E-Commerce App
 
-A SHEIN-style e-commerce storefront built with **Flutter Web** and **Firebase**,
-implemented in two days as a DEPI training task. It covers the basic
-e-commerce services end to end: browsing/searching a catalog, product
-details, a Firestore-backed cart, a wishlist, email/password auth, and
-checkout that writes real orders to Firestore.
+A fully functional, SHEIN-style online store running on **Flutter Web** with
+**Firebase** as its backend. A visitor can browse a 52-product catalog, search
+and filter it, sign up with email and password, manage a persistent cart and
+wishlist, and place real orders — every step stored in Cloud Firestore and
+working end to end.
 
 **Stack:** Flutter (Web) · `flutter_bloc` (MVVM, Cubit per feature) ·
 Firebase Auth · Cloud Firestore · go_router
@@ -25,22 +25,39 @@ Firebase Auth · Cloud Firestore · go_router
 | :---: |
 | **Wishlist** · **Sign in** (email/password, mapped friendly errors) |
 
-> Demo/training project: Firestore rules are intentionally open so the app
-> can seed its demo catalog anonymously on first run. Do not deploy as-is
-> (see `firestore.rules`).
-
-## Features
+## What it does
 
 | Area | What works |
 | --- | --- |
 | Home | Hero banner, category strip, New In / Best Sellers / Sale sections (all Firestore-driven) |
 | Catalog | Group pages (`/catalog/women`), search (`/catalog/all?q=shirt`), category-chip filters, empty states |
 | Product | Image carousel, price/discount/rating, size & color pickers, quantity stepper |
-| Cart | Firestore-backed per-user cart, realtime badge, quantity updates, remove, summary |
+| Cart | Firestore-backed per-user cart, realtime badge, quantity updates, remove, order summary |
 | Wishlist | Firestore-backed per-user wishlist, save/remove from product pages, wishlist page |
 | Auth | Email/password sign-up & sign-in, session persistence across reloads, friendly mapped errors |
 | Checkout | Delivery-address form, order written to Firestore, cart cleared, redirect to My Orders with a success banner |
 | Orders | Per-user order history (`/orders?placed=1` shows the confirmation banner) |
+| Guest mode | Everything is browsable without an account; account-only actions open a sign-in prompt |
+
+## Engineering highlights
+
+- **Feature-first MVVM** — one Cubit (ViewModel) per feature, screens hold
+  widgets only, all Firebase access behind repository interfaces
+  (`lib/features/<feature>/viewmodel` + `lib/data/repositories`).
+- **Realtime by design** — cart, wishlist and orders stream from Firestore, so
+  badges and lists stay in sync without manual refresh.
+- **Security rules that match the data model** — carts, wishlists and profiles
+  are strictly uid-matched (`request.auth.uid == uid`); orders are created by
+  and visible only to their buyer; the catalog is publicly readable and its
+  seeded documents are immutable (`create`-only).
+- **Verified behavior, not just compiled code** — clean `flutter analyze`,
+  20 unit tests (widgets, catalog logic, error mapping), and the full user
+  journey verified end to end in headless Chromium against the real Firebase
+  backend, driving the app through its accessibility tree.
+- **Accessible UI** — the semantics tree is always exposed, which makes the
+  store usable with screen readers and drivable by automated tests.
+- **Clean error surfacing** — every Firebase exception maps to a short,
+  human-readable message (`FirebaseErrorMapper`).
 
 ## Architecture
 
@@ -83,9 +100,6 @@ user context automatically on sign-in/out.
 `/` · `/login` · `/signup` · `/catalog/<group>?q=` · `/product/<id>` ·
 `/cart` · `/wishlist` · `/checkout` · `/orders?placed=1`
 
-Guests can browse everything; cart/wishlist/checkout actions open a sign-in
-prompt (`core/utils/auth_gate.dart` + `SignInPrompt`).
-
 ## Verification guide
 
 ### Prerequisites
@@ -124,8 +138,11 @@ flutter run -d chrome     # dev — or serve build/web with any static server
 
 First run seeds the catalog (52 products) into Firestore automatically.
 
-## Project notes
+## Security notes
 
-- `.zcode/` is local tooling config and must never be pushed to GitHub.
-- `firestore.rules` are development-open on purpose; tighten before any real
-  deployment (require `request.auth != null` for writes).
+- `firestore.rules` restrict per-user data to its owner and keep the demo
+  catalog immutable after seeding. Deploy them with
+  `firebase deploy --only firestore:rules`.
+- The open anonymous `create` on `products` exists solely for first-run demo
+  seeding; remove it (and seed through a script) before any real deployment.
+- `.zcode/` is local tooling config and is never committed.

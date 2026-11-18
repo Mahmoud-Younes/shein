@@ -1,11 +1,43 @@
 rules_version = '2';
-// DEVELOPMENT RULES for the SHEIN training task.
-// Open on purpose: the app seeds demo products anonymously at startup.
-// Tighten before any real deployment (require request.auth != null for writes).
+
+// SHEIN clone — Firestore security rules.
+// - Catalog browsing is public: guests can read products without an account.
+// - First-run demo seeding creates the products collection anonymously
+//   (`ensureSeeded()`); seeded docs can never be altered or deleted.
+// - Carts, wishlists and profiles are strictly per-user (uid-matched).
+// - Orders are created by the signed-in buyer and readable only by them.
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /products/{id} {
+      allow read: if true;
+      // Demo seeding only: new docs may appear, never be altered or removed.
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    match /carts/{uid}/items/{id} {
+      allow read, write: if isOwner(uid);
+    }
+
+    match /wishlists/{uid}/items/{id} {
+      allow read, write: if isOwner(uid);
+    }
+
+    match /orders/{id} {
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid;
+      allow read: if request.auth != null
+                  && resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
     }
   }
 }
